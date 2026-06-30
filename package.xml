@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>nav_arbitration</name>
+  <version>0.0.0</version>
+  <description>The nav_arbitration package</description>
+  <maintainer email="dev@sabi-agri.com">Sabi Agri</maintainer>
+  <license>Apache License 2.0</license>
+
+  <author email="vincent***">Vincent***</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>lifecycle_msgs</depend>
+  <depend>nav_interfaces</depend>
+  <depend>nav_lifecycle_manager</depend>
+  <depend>simple_node</depend>
+  <depend>yasmin</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_cmake_cppcheck</test_depend>
+  <test_depend>ament_cmake_lint_cmake</test_depend>
+  <test_depend>ament_cmake_xmllint</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
