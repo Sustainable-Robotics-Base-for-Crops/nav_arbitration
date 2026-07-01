@@ -18,10 +18,16 @@ Arbitration::Arbitration()
   this->declare_parameter("timeout_end_emergency_stop", timeout_end_emergency_stop);
   this->get_parameter("timeout_end_emergency_stop", timeout_end_emergency_stop);
   this->declare_parameter("lateral_deviation_max", 0.4);
-  this->declare_parameter("lateral_deviation_max.in_working_zone", 0.2);
-  this->declare_parameter("lateral_deviation_max.out_working_zone", 0.4);
+  this->declare_parameter("lateral_deviation_max.in_working_zone", 0.4);
+  this->declare_parameter("lateral_deviation_max.out_working_zone", 0.6);
+  this->declare_parameter("lateral_deviation_max.uturn", 1.5);
+  this->declare_parameter("cut_line_overshoot", 0.05);
   this->declare_parameter("course_deviation_max", M_PI / 8);
   this->declare_parameter("speed_working_zone_added", 0.0);
+  this->declare_parameter("working_zone_action.name", "cylinder_go_end");
+  this->declare_parameter("working_zone_action.offset_distance_at_the_start", 0.0);
+  this->declare_parameter("working_zone_action.offset_distance_at_the_end", 0.0);
+  this->declare_parameter("loop_back.return_speed", 0.0);
 
   // Initialize blackboard
   blackboard_ = std::make_shared<yasmin::Blackboard>();
@@ -29,7 +35,7 @@ Arbitration::Arbitration()
   client_service_node_ = this->create_sub_node("client_service");
 
   node_names_ = { node_name_line_matcher_server_, node_name_line_follower_, node_name_turn_on_spot_server_,
-                  node_name_path_matcher_server_, node_name_path_follower_ };
+                  node_name_path_matcher_server_, node_name_path_follower_, node_name_cylinder_go_end_ };
 
   blackboard_->set<std::shared_ptr<nav_lifecycle_manager::LifecycleManager>>(
       "lifecycle_manager",
@@ -41,6 +47,9 @@ Arbitration::Arbitration()
   blackboard_->set<std::shared_ptr<nav_lifecycle_manager::LifecycleServiceClient>>(
       "client_geofencing",
       std::make_shared<nav_lifecycle_manager::LifecycleServiceClient>(node_name_geofencing_, client_service_node_));
+  blackboard_->set<std::shared_ptr<nav_lifecycle_manager::LifecycleServiceClient>>(
+      "client_json_agri_format_parser", std::make_shared<nav_lifecycle_manager::LifecycleServiceClient>(
+                                            node_name_json_agri_format_parser_, client_service_node_));
   blackboard_->set<std::shared_ptr<nav_lifecycle_manager::LifecycleServiceClient>>(
       "client_replay",
       std::make_shared<nav_lifecycle_manager::LifecycleServiceClient>(node_name_replay_, client_service_node_));

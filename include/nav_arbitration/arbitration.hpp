@@ -30,10 +30,12 @@ private:
   std::string node_name_turn_on_spot_server_{ "/auto/turn/on_spot" };
   std::string node_name_path_matcher_server_{ "/auto/path/matcher" };
   std::string node_name_path_follower_{ "/auto/path/follower" };
+  std::string node_name_cylinder_go_end_{ "/auto/working_zone_action/cylinder_go_end" };
 
   std::string node_name_replay_{ "/auto/replay" };
   std::string node_name_recorder_{ "/auto/recorder" };
   std::string node_name_geofencing_{ "/safety/geofencing/geofencing_publisher" };
+  std::string node_name_json_agri_format_parser_{ "/auto/json_agri_format_parser" };
 
   std::shared_ptr<yasmin::Blackboard> blackboard_;
   std::shared_ptr<yasmin::StateMachine> state_machine_;
