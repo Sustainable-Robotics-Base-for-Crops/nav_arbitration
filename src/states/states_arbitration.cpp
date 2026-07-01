@@ -28,7 +28,7 @@ bool BaseState::change_replay_states(lifecycle_msgs::msg::State::_id_type desire
                     ->change_state_robust(desired_state);
   result &= blackboard_->get<std::shared_ptr<nav_lifecycle_manager::LifecycleServiceClient>>("client_geofencing")
                 ->change_state_robust(desired_state);
-  result &= blackboard_->get<std::shared_ptr<nav_lifecycle_manager::LifecycleServiceClient>>("client_json_agri_format")
+  result &= blackboard_->get<std::shared_ptr<nav_lifecycle_manager::LifecycleServiceClient>>("client_json_agri_format_parser")
                 ->change_state_robust(desired_state);
   print_change_result(result, desired_state);
   return result;

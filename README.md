@@ -1,6 +1,6 @@
 # nav_arbitration
 
-High-level supervisor of the autonomous navigation stack. It runs a [YASMIN](https://github.com/uleroboticsgroup/yasmin) state machine that drives the **lifecycle states** of the managed navigation nodes (action servers, replay, geofencing, recorder) according to operator commands (`conductor_cmd`) and to the vehicle / replay status. It also republishes the resulting drive mode on `conductor_state`.
+High-level supervisor of the autonomous navigation stack. It runs a [YASMIN](https://github.com/uleroboticsgroup/yasmin) state machine that drives the **lifecycle states** of the managed navigation nodes (action servers including `cylinder_go_end`, replay, geofencing, recorder, `json_agri_format_parser`) according to operator commands (`conductor_cmd`) and to the vehicle / replay status. It also republishes the resulting drive mode on `conductor_state`.
 
 **Node:** `arbitration` · **Executable:** `nav_arbitration`
 
@@ -8,12 +8,12 @@ High-level supervisor of the autonomous navigation stack. It runs a [YASMIN](htt
 
 The node owns a YASMIN `Blackboard` shared by every state and a `StateMachine` started in a dedicated thread (`start_sm()`):
 
-1. Build the blackboard: a [`nav_lifecycle_manager::LifecycleManager`](../nav_lifecycle_manager/README.md) managing the action-server group, plus individual `LifecycleServiceClient` for replay, geofencing and recorder.
+1. Build the blackboard: a [`nav_lifecycle_manager::LifecycleManager`](../nav_lifecycle_manager/README.md) managing the action-server group (including `cylinder_go_end`), plus individual `LifecycleServiceClient` instances for replay, geofencing, recorder and `json_agri_format_parser`.
 2. Run the state machine, which on each control cycle (10 Hz) refreshes the blackboard (`conductor_cmd`, `replay_status`, `vehicle_status`) and evaluates whether a transition is allowed.
 3. On every transition, drive the managed nodes to the required lifecycle primary state (configure / activate / deactivate / cleanup).
 4. In parallel, a timer publishes the current drive mode on `/auto/conductor_state` so that the rest of the system knows the active mode.
 
-Managed nodes are transitioned as a group through the lifecycle manager; replay, geofencing and recorder are transitioned individually through their service clients.
+Managed nodes are transitioned as a group through the lifecycle manager; replay, geofencing, `json_agri_format_parser` and recorder are transitioned individually through their service clients.
 
 ## State machine
 
@@ -41,35 +41,43 @@ If a group transition fails, the affected nodes are rolled back to their previou
 
 **Action-server group** (via `nav_lifecycle_manager::LifecycleManager`, transitioned in list order):
 
-| Node                  | Role                |
-| --------------------- | ------------------- |
-| `/auto/line/matcher`  | Line matcher server |
-| `/auto/line/follower` | Line follower       |
-| `/auto/turn/on_spot`  | Turn-on-spot server |
-| `/auto/path/matcher`  | Path matcher server |
-| `/auto/path/follower` | Path follower       |
+| Node                                        | Role                   |
+| ------------------------------------------- | ---------------------- |
+| `/auto/line/matcher`                        | Line matcher server    |
+| `/auto/line/follower`                       | Line follower          |
+| `/auto/turn/on_spot`                        | Turn-on-spot server    |
+| `/auto/path/matcher`                        | Path matcher server    |
+| `/auto/path/follower`                       | Path follower          |
+| `/auto/working_zone_action/cylinder_go_end` | Cylinder GO/END action |
 
 **Individually managed** (via `LifecycleServiceClient`):
 
-| Node                                      | Blackboard client   |
-| ----------------------------------------- | ------------------- |
-| `/auto/replay`                            | `client_replay`     |
-| `/auto/recorder`                          | `client_recorder`   |
-| `/safety/geofencing/geofencing_publisher` | `client_geofencing` |
+| Node                                      | Blackboard client                |
+| ----------------------------------------- | -------------------------------- |
+| `/auto/replay`                            | `client_replay`                  |
+| `/auto/recorder`                          | `client_recorder`                |
+| `/safety/geofencing/geofencing_publisher` | `client_geofencing`              |
+| `/auto/json_agri_format_parser`           | `client_json_agri_format_parser` |
 
 ## Parameters
 
-| Parameter                                | Default | Description                                                     |
-| ---------------------------------------- | ------- | --------------------------------------------------------------- |
-| `rate`                                   | `0.3`   | Period (s) of the `conductor_state` publishing timer            |
-| `timeout_end_emergency_stop`             | `8.0`   | Delay (s) after an emergency stop ends before replay may resume |
-| `lateral_deviation_max`                  | `0.4`   | Max lateral deviation (m) — served to the navigation nodes      |
-| `lateral_deviation_max.in_working_zone`  | `0.2`   | Max lateral deviation inside the working zone (m)               |
-| `lateral_deviation_max.out_working_zone` | `0.4`   | Max lateral deviation outside the working zone (m)              |
-| `course_deviation_max`                   | `π/8`   | Max course deviation (rad) — served to the navigation nodes     |
-| `speed_working_zone_added`               | `0.0`   | Extra speed applied inside the working zone (m/s)               |
+| Parameter                                          | Default           | Description                                                      |
+| -------------------------------------------------- | ----------------- | ---------------------------------------------------------------- |
+| `rate`                                             | `0.3`             | Period (s) of the `conductor_state` publishing timer             |
+| `timeout_end_emergency_stop`                       | `8.0`             | Delay (s) after an emergency stop ends before replay may resume  |
+| `lateral_deviation_max`                            | `0.4`             | Max lateral deviation (m) — served to the navigation nodes       |
+| `lateral_deviation_max.in_working_zone`            | `0.4`             | Max lateral deviation inside the working zone (m)                |
+| `lateral_deviation_max.out_working_zone`           | `0.6`             | Max lateral deviation outside the working zone (m)               |
+| `lateral_deviation_max.uturn`                      | `1.5`             | Max lateral deviation during a U-turn (m)                        |
+| `cut_line_overshoot`                               | `0.05`            | Cut-line crossing overshoot (m) — served to the navigation nodes |
+| `course_deviation_max`                             | `π/8`             | Max course deviation (rad) — served to the navigation nodes      |
+| `speed_working_zone_added`                         | `0.0`             | Extra speed applied inside the working zone (m/s)                |
+| `working_zone_action.name`                         | `cylinder_go_end` | Name of the working-zone action server                           |
+| `working_zone_action.offset_distance_at_the_start` | `0.0`             | Offset distance at the start of the working zone (m)             |
+| `working_zone_action.offset_distance_at_the_end`   | `0.0`             | Offset distance at the end of the working zone (m)               |
+| `loop_back.return_speed`                           | `0.0`             | Return speed on loop-back segments (m/s)                         |
 
-The deviation parameters are declared here so that downstream nodes (e.g. [`nav_line_matcher`](../nav_line_matcher/README.md)) can read them remotely from `/auto/arbitration`.
+The navigation and mission parameters are declared here so that downstream nodes (e.g. [`nav_line_matcher`](../nav_line_matcher/README.md)) can read them remotely from `/auto/arbitration`.
 
 ## Topics
 
