@@ -1,0 +1,17 @@
+/**:
+  ros__parameters:
+    rate: 0.3
+    timeout_end_emergency_stop: 8.0
+    lateral_deviation_max:
+      in_working_zone: 0.4
+      out_working_zone: 0.6
+      uturn: 1.5
+    cut_line_overshoot: 0.05
+    course_deviation_max: 0.3
+    speed_working_zone_added: 0.0
+    working_zone_action:
+      name: cylinder_go_end
+      offset_distance_at_the_end: 1.401
+      offset_distance_at_the_start: 1.1
+    loop_back:
+      return_speed: 0.0
