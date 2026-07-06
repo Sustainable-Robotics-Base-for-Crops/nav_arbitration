@@ -12,10 +12,11 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@v0.4
         with:
           package-name: nav_arbitration
           target-ros2-distro: jazzy
-          vcs-repo-file-url: https://raw.githubusercontent.com/Sustainable-Robotics-Base-for-Crops/nav_arbitration/main/dependencies.repos
+          vcs-repo-file-url: dependencies.repos
           import-token: ${{ secrets.GITHUB_TOKEN }}
