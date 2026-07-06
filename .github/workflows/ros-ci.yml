@@ -17,6 +17,5 @@ jobs:
         with:
           package-name: nav_arbitration
           target-ros2-distro: jazzy
-          vcs-repo-file-url: https://github.com/Sustainable-Robotics-Base-for-Crops/nav_interfaces.git
-          vcs-repo-file-url: https://github.com/Sustainable-Robotics-Base-for-Crops/nav_lifecycle_manager.git
+          vcs-repo-file-url: dependencies.repos
           import-token: ${{ secrets.GITHUB_TOKEN }}

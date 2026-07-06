@@ -1,0 +1,13 @@
+repositories:
+  nav_interfaces:
+    type: git
+    url: https://github.com/Sustainable-Robotics-Base-for-Crops/nav_interfaces.git
+    version: main
+  nav_lifecycle_manager:
+    type: git
+    url: https://github.com/Sustainable-Robotics-Base-for-Crops/nav_lifecycle_manager.git
+    version: main
+  simple_node:
+    type: git
+    url: https://github.com/uleroboticsgroup/simple_node.git
+    version: main
