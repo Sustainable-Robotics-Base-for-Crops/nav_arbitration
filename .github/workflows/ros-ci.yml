@@ -17,5 +17,5 @@ jobs:
         with:
           package-name: nav_arbitration
           target-ros2-distro: jazzy
-          vcs-repo-file-url: dependencies.repos
+          vcs-repo-file-url: https://raw.githubusercontent.com/Sustainable-Robotics-Base-for-Crops/nav_arbitration/main/dependencies.repos
           import-token: ${{ secrets.GITHUB_TOKEN }}
