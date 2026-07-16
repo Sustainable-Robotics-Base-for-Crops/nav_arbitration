@@ -6,7 +6,6 @@
       in_working_zone: 0.4
       out_working_zone: 0.6
       uturn: 1.5
-    cut_line_overshoot: 0.05
     course_deviation_max: 0.3
     speed_working_zone_added: 0.0
     working_zone_action:

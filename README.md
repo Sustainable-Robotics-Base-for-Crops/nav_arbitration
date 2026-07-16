@@ -66,7 +66,6 @@ Individually managed (via `LifecycleServiceClient`):
 | `lateral_deviation_max.in_working_zone`            | `0.4`             | Max lateral deviation inside working zone (m)                |
 | `lateral_deviation_max.out_working_zone`           | `0.6`             | Max lateral deviation outside working zone (m)               |
 | `lateral_deviation_max.uturn`                      | `1.5`             | Max lateral deviation during U-turn (m)                      |
-| `cut_line_overshoot`                               | `0.05`            | Cut-line crossing overshoot (m), served to navigation nodes  |
 | `course_deviation_max`                             | `π/8`             | Max course deviation (rad), served to navigation nodes       |
 | `speed_working_zone_added`                         | `0.0`             | Extra speed inside working zone (m/s)                        |
 | `working_zone_action.name`                         | `cylinder_go_end` | Working-zone action server name                              |

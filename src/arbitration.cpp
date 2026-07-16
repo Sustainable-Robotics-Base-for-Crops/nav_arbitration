@@ -21,7 +21,6 @@ Arbitration::Arbitration()
   this->declare_parameter("lateral_deviation_max.in_working_zone", 0.4);
   this->declare_parameter("lateral_deviation_max.out_working_zone", 0.6);
   this->declare_parameter("lateral_deviation_max.uturn", 1.5);
-  this->declare_parameter("cut_line_overshoot", 0.05);
   this->declare_parameter("course_deviation_max", M_PI / 8);
   this->declare_parameter("speed_working_zone_added", 0.0);
   this->declare_parameter("working_zone_action.name", "cylinder_go_end");
