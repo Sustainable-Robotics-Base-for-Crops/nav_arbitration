@@ -1,6 +1,8 @@
 # nav_arbitration
 
-Supervisor of the autonomous navigation stack. It runs a YASMIN state machine that drives lifecycle transitions of managed nodes from operator commands (`/auto/conductor_cmd`), replay status and vehicle status. It publishes the active drive mode on `/auto/conductor_state` and declares navigation parameters read remotely by [`nav_line_matcher`](../nav_line_matcher/README.md), [`nav_path_matcher`](../nav_path_matcher/README.md), [`nav_turn`](../nav_turn/README.md) and [`nav_replay`](../nav_replay/README.md). Group transitions use [`nav_lifecycle_manager`](../nav_lifecycle_manager/README.md).
+Supervisor of the autonomous navigation stack. It runs a YASMIN state machine that drives lifecycle transitions of managed nodes from operator commands (`/auto/conductor_cmd`), replay status and vehicle status. It publishes the active drive mode on `/auto/conductor_state` and declares navigation parameters read remotely by `nav_line_matcher`, `nav_path_matcher`, `nav_turn` and `nav_replay`. Group transitions use `nav_lifecycle_manager`.
+
+![architecture](img/architecture.png)
 
 ## Overview
 
@@ -27,7 +29,6 @@ If a group transition fails, affected nodes are rolled back to their previous st
 | From              | Outcome            | To                | Trigger (summary)                                                    |
 | ----------------- | ------------------ | ----------------- | -------------------------------------------------------------------- |
 | `unconfigured`    | `replay_configure` | `replay_inactive` | `drive_mode == DRIVE_REPLAY`, no `restart`, vehicle status OK        |
-| `unconfigured`    | `cleanup`          | `unconfigured`    | Stays unconfigured (default)                                         |
 | `replay_inactive` | `activate`         | `replay_active`   | Not paused, not restart, replay and vehicle status OK                |
 | `replay_inactive` | `cleanup`          | `unconfigured`    | `restart`, mode change, or vehicle error past emergency-stop timeout |
 | `replay_active`   | `deactivate`       | `replay_inactive` | `pause`, end of path, remote e-stop or bumper warning                |
@@ -41,7 +42,7 @@ Action-server group (via `LifecycleManager`, list order):
 | Node                                        | Role                |
 | ------------------------------------------- | ------------------- |
 | `/auto/line/matcher`                        | Line matcher server |
-| `/auto/line/follower`                       | Line follower       |
+| `/auto/line/follower`                       | Path follower       |
 | `/auto/turn/on_spot`                        | Turn-on-spot server |
 | `/auto/path/matcher`                        | Path matcher server |
 | `/auto/path/follower`                       | Path follower       |
