@@ -19,4 +19,3 @@ jobs:
           package-name: nav_arbitration
           target-ros2-distro: jazzy
           vcs-repo-file-url: dependencies.repos
-          import-token: ${{ secrets.REPO_TOKEN }}
