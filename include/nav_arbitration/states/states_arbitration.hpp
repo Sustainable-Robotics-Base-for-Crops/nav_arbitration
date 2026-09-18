@@ -10,6 +10,8 @@
 #include "lifecycle_msgs/msg/state.hpp"
 #include "nav_interfaces/msg/conductor.hpp"
 
+#include <map>
+
 namespace nav_arbitration
 {
 enum class States
