@@ -7,6 +7,7 @@
       out_working_zone: 0.6
       uturn: 1.5
     course_deviation_max: 0.3
+    course_deviation_max.uturn: 1.0
     speed_working_zone_added: 0.0
     working_zone_action:
       name: cylinder_go_end
